@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html>
+<head>
+<style>
+button {
+    cursor: pointer;
+    transition: border-color 0.125s ease;
+    border: 3px solid black;
+    padding: 15px 30px
+}
+button:hover {
+    border-color: yellow;
+}
+button:active {
+    transition: border-color 0s ease;
+    border-color: purple;
+}
+</style>
+</head>
+<body>
+    <h1>Clicker</h1>
+    <p id="display"></p>
+    <p style="display: none;" id="clickpower"></p>
+    <p style="display: none;" id="clicks per second"></p>
+    <button onclick="more()" id="clickbutton">Click</button>
+    <button onclick="save()" id="saver">Save</button>
+    <button onclick="restart()" id="restarter">Restart</button>
+    <button onclick="clickmore()" style="display: none;" id="visableclick"></button>
+    <button onclick="cpsupgrade()" style="display: none;" id="visablecps">Clicks Per Second/100/</button>
+    <button onclick="clickmoreupgrade()" style="display: none;" id="visableclickupgrade"></button>
+<script>
+    let visableclick1 = 0;
+    let money = 0;
+    let power = 1;
+    let cps = 0;
+    let visablecps1 = 0;
+    let clickpowermoney = 50;
+    document.getElementById("visablecps").style.color = "white";
+    document.getElementById("visableclick").style.color = "white";
+    document.getElementById("clickbutton").style.backgroundColor = "aqua";
+    document.getElementById("saver").style.backgroundColor = "lime";
+    document.getElementById("restarter").style.backgroundColor = "darkred";
+    document.getElementById("restarter").style.color = "white";
+    if (localStorage.getItem("money")) {
+        money = parseInt(localStorage.getItem("money"), 10);
+    }
+    if (localStorage.getItem("visableclick1")) {
+        visableclick1 = parseInt(localStorage.getItem("visableclick1"), 10);
+    }
+    if (localStorage.getItem("power")) {
+        power = parseInt(localStorage.getItem("power"), 10);
+    }
+    if (localStorage.getItem("visablecps1")) {
+        visablecps1 = parseInt(localStorage.getItem("visablecps1"), 10);
+    }
+    if (localStorage.getItem("cps")) {
+        cps = parseInt(localStorage.getItem("cps"), 10);
+    }
+    if (localStorage.getItem("clickpowermoney")) {
+        clickpowermoney = parseInt(localStorage.getItem("clickpowermoney"), 10);
+    }
+    if (money < clickpowermoney) {
+            document.getElementById("visableclick").style.backgroundColor = "red";
+            document.getElementById("visableclickupgrade").style.backgroundColor = "red";
+        }
+    if (money < 100) {
+        document.getElementById("visablecps").style.backgroundColor = "red";
+    };
+    if (money >= clickpowermoney) {
+        document.getElementById("visableclick").style.backgroundColor = "green";
+        document.getElementById("visableclickupgrade").style.backgroundColor = "green";
+    }
+    if (money >= 100) {
+        document.getElementById("visablecps").style.backgroundColor = "green";
+    }
+    if (visableclick1 === 1) {
+        document.getElementById("visableclick").style.display = "block";
+        document.getElementById("visableclickupgrade").style.display = "block";
+        document.getElementById("clickpower").style.display = "block";
+    }
+    if (visablecps1 === 1) {
+        document.getElementById("visablecps").style.display = "block";
+        document.getElementById("clicks per second").style.display = "block";
+    }
+    document.getElementById("visableclick").textContent = `Click power/${clickpowermoney}/`;
+    document.getElementById("display").textContent = `money: $${money}`;
+    document.getElementById("clicks per second").textContent = `clicks per second: ${cps}`;
+    document.getElementById("clickpower").textContent = `click power: ${power}`;
+    document.getElementById("visableclickupgrade").textContent = `click power upgrader/${clickpowermoney}/`;
+    function more() {
+        money += power
+        document.getElementById("display").textContent = `money: $${money}`;
+        if (money >= clickpowermoney) {
+            visableclick1 = 1
+            document.getElementById("visableclick").style.backgroundColor = "green";
+            document.getElementById("visableclickupgrade").style.backgroundColor = "green";
+            document.getElementById("clickpower").style.display = "block";
+        };
+        if (visableclick1 === 1) {
+            document.getElementById("visableclick").style.display = "block";
+            document.getElementById("visableclickupgrade").style.display = "block";
+        };
+        if (money >= 100) {
+            visablecps1 = 1
+            document.getElementById("visablecps").style.backgroundColor = "green";
+            document.getElementById("clicks per second").style.display = "block";
+        };
+        if (visablecps1 === 1) {
+            document.getElementById("visablecps").style.display = "block";
+        };
+    };
+    function save() {
+        localStorage.setItem("money", money);
+        localStorage.setItem("visableclick1", visableclick1);
+        localStorage.setItem("power", power);
+        localStorage.setItem("visablecps1", visablecps1);
+        localStorage.setItem("cps", cps);
+        localStorage.setItem("clickpowermoney", clickpowermoney);
+        console.log("money: " + money)
+        console.log("click upgrade visable: " + visableclick1)
+        console.log("click power: " + power)
+        console.log("clicks per second upgrade visable: " + visablecps1)
+        console.log("clicks per second: " + cps)
+        console.log("click power button upgrades" + clickpowermoney)
+    }
+    function restart() {
+        money = 0
+        visableclick1 = 0
+        power = 1
+        cps = 0
+        visablecps1 = 0
+        clickpowermoney = 50
+        save()
+        document.getElementById("visableclick").style.display = "none";
+        document.getElementById("visableclickupgrade").style.display = "none";
+        document.getElementById("display").textContent = `${money}`;
+        document.getElementById("visablecps").style.display = "none";
+        document.getElementById("clickpower").style.display = "none";
+        document.getElementById("clicks per second").style.display = "none";
+        document.getElementById("clicks per second").textContent = `clicks per second: ${cps}`;
+        document.getElementById("clickpower").textContent = `click power: ${power}`;
+    }
+    function clickmore() {
+        if (money >= clickpowermoney) {
+            money -= clickpowermoney;
+            power += clickpowermoney / 50;
+            document.getElementById("clicks per second").textContent = `clicks per second: ${cps}`;
+            document.getElementById("clickpower").textContent = `click power: ${power}`;
+            document.getElementById("clickpowerupgrade").textContent = `click power upgrader/${clickpowermoney}/`;
+            document.getElementById("display").textContent = `money: $${money}`;
+        };
+        if (money < clickpowermoney) {
+            document.getElementById("visableclick").style.backgroundColor = "red";
+            document.getElementById("visableclickupgrade").style.backgroundColor = "red";
+        };
+        if (money < 100) {
+            document.getElementById("visablecps").style.backgroundColor = "red";
+        };
+    };
+    const timerId = setInterval(function() {
+        money += cps;
+        document.getElementById("display").textContent = `money: $${money}`;
+        if (money >= clickpowermoney) {
+            document.getElementById("visableclick").style.backgroundColor = "green";
+            document.getElementById("visableclickupgrade").style.backgroundColor = "green";
+        if (money >= 100) {
+            document.getElementById("visablecps").style.backgroundColor = "green";
+        }
+        }
+    }, 1000);
+    function cpsupgrade() {
+        if (money >= 100) {
+            money -= 100;
+            cps += 1;
+            document.getElementById("display").textContent = `money: $${money}`;
+            document.getElementById("clicks per second").textContent = `clicks per second: ${cps}`;
+            document.getElementById("clickpower").textContent = `click power: ${power}`;
+            document.getElementById("clickpowerupgrade").textContent = `click power upgrader/${clickpowermoney}/`;
+        if (money < clickpowermoney) {
+            document.getElementById("visableclick").style.backgroundColor = "red";
+            document.getElementById("visableclickupgrade").style.backgroundColor = "red";
+        }
+        if (money < 100) {
+            document.getElementById("visablecps").style.backgroundColor = "red";
+        };
+        };
+    };
+    function clickmoreupgrade() {
+        if (money >= clickpowermoney) {
+            money -= clickpowermoney;
+            clickpowermoney *= 2
+            document.getElementById("display").textContent = `money: $${money}`;
+            document.getElementById("clicks per second").textContent = `clicks per second: ${cps}`;
+            document.getElementById("clickpower").textContent = `click power: ${power}`;
+            document.getElementById("clickpowerupgrade").textContent = `click power upgrader/${clickpowermoney}/`;
+            document.getElementById("visableclick").textContent = `Click power/${clickpowermoney}/`;
+            if (money < clickpowermoney) {
+                document.getElementById("visableclick").style.backgroundColor = "red";
+                document.getElementById("visableclickupgrade").style.backgroundColor = "red";
+            };
+            if (money < 100) {
+                document.getElementById("visablecps").style.backgroundColor = "red";
+            };
+        };
+    };
+</script>
+</body>
+</html>
