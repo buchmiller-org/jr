@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<style>
+    body {
+        background-color: #46ff40;
+        margin: 0;
+        height: 100vh;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+    canvas {
+        background-color: white;
+    }
+</style>
+<title>Flappy Bird</title>
+<link rel="icon" type="image/x-icon" href="favicon.png">
+</head>
+<body>
+<canvas id="myCanvas" width="625" height="825" style="border:3px solid black;"></canvas>
+<script>
+    let pos_flappy = 825 - 450;
+    let gravity = 0;
+    const canvas = document.getElementById("myCanvas");
+    const ctx = canvas.getContext("2d");
+    const img = new Image();
+    const gap = 100;
+    let space = random(50, 685)
+    let ob_pos = 650;
+    let end = 1
+    let best = 0
+    let score = 0
+    let point = 1
+    ctx.font = "60px Arial";
+    ctx.fillStyle = "blue";
+    ctx.textAlign = "middle";
+    ctx.textBaseline = "middle";
+    img.src = './flappy.png';
+    ctx.fillStyle = "lime";
+    ctx.fillRect(ob_pos, 0, 50, space);
+    ctx.fillRect(ob_pos, space + 200, 50, 1000);
+    ctx.fillStyle = "green";
+    ctx.fillRect(ob_pos, space - 25, 50, 25)
+    ctx.fillRect(ob_pos, space + 200, 50, 25)
+    if (localStorage.getItem("Flappy_Bird_real_best")) {
+        best = parseInt(localStorage.getItem("Flappy_Bird_real_best"), 10)
+    }
+    img.onload = () => {
+        ctx.drawImage(img, 200, pos_flappy, 81, 54);
+    };
+    const timerId = setInterval(function() {
+        ctx.fillStyle = 'white';
+        ctx.fillRect(0, 0, 625, 825);
+        if (end === 0) {
+            ctx.drawImage(img, 200, pos_flappy, 81, 54);
+            ctx.fillStyle = "lime";
+            ctx.fillRect(ob_pos, 0, 50, space);
+            ctx.fillRect(ob_pos, space + 200, 50, 1000);
+            ctx.fillStyle = "green";
+            ctx.fillRect(ob_pos, space - 25, 50, 25)
+            ctx.fillRect(ob_pos, space + 200, 50, 25)
+            pos_flappy += gravity;
+            gravity += 0.0425
+            ob_pos -= 1.59
+            if (ob_pos < -50) {
+                ob_pos = 650;
+                space = random(50, 685);
+                point = 1
+            };
+            if (pos_flappy > 780) {
+                death();
+            };
+            if (pos_flappy < -10) {
+                death();
+            };
+            if (150 <= ob_pos && ob_pos <= 270) {
+                if (pos_flappy + 54 < space + 200 && pos_flappy > space) {}
+                else {
+                    death();
+                };
+            }
+            if (ob_pos < 146 && point === 1) {
+                point = 0
+                score += 1
+            }
+        }
+        if (end === 1) {
+            ctx.fillStyle = 'aqua';
+            ctx.fillRect(0, 0, 625, 825);
+            ctx.font = "60px Arial";
+            ctx.fillStyle = "red";
+            ctx.textAlign = "middle";
+            ctx.textBaseline = "middle";
+            ctx.fillText("TAP TO START", 100, 400)
+        }
+        ctx.font = "30px Arial";
+        ctx.fillStyle = "purple";
+        ctx.textAlign = "left";
+        ctx.textBaseline = "left";
+        ctx.fillText("Score: " + score, 10, 20)
+        ctx.fillText("Best: " + best, 10, 60)
+    }, 10);
+    function click_run(event) {
+        gravity = -2.8;
+        end = 0;
+    };
+    function random(min, max) {
+        return Math.random() * (max - min) + min;
+    }   
+    canvas.addEventListener('click', click_run);
+    function death() {
+        ob_pos = 650;
+        pos_flappy = 825 - 450;
+        gravity = 0;
+        space = random(50, 685);
+        end = 1
+        point = 1
+        if (score > best) {
+            best = score
+            localStorage.setItem("Flappy_Bird_real_best", best)
+        }
+        score = 0
+    };
+</script>
+</body>
+</html>
