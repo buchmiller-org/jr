@@ -3,9 +3,9 @@
 <head>
 <style>
     body {
-        background: linear-gradient(-45deg, #2f00ff, #8400ff, #ff0000, #ffe600, #00eeff, #ffae00, #790000);
+        background: linear-gradient(90deg, #2f00ff, #8400ff, #ff0000, #ffe600, #00eeff, #ffae00, #790000);
         background-size: 1000% 900%;
-        animation: gradientShift 12s ease infinite;
+        animation: gradientShift 20s ease infinite;
     }
     @keyframes gradientShift {
         0% {
@@ -17,6 +17,14 @@
         100% {
             background-position: 0% 50%;
         }
+    }
+    img {
+            cursor: pointer;
+            border: 10px solid transparent;
+            transition: border-color 0.3s;
+        }
+    img:hover {
+        border-color: #0004ff
     }
 </style>
 </head>
