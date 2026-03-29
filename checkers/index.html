@@ -1,0 +1,524 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<title>Checkers</title>
+<style>
+    body {
+        margin: 0;
+    }
+</style>
+</head>
+<body>
+<canvas id="myCanvas" width="500" height="500" style="border:1px solid black;"></canvas>
+<script>
+    const canvas = document.getElementById("myCanvas");
+    const ctx = canvas.getContext("2d");
+    const img = new Image();
+    img.src = './checker-board.png';
+    const red = new Image()
+    const yellow = new Image()
+    red.src = './red.png';
+    yellow.src = './yellow.png';
+    let new_pos = { x: undefined, y: undefined};
+    let red1 = { x: 1, y: 1, super: false, life: true};
+    let red2 = { x: 3, y: 1, super: false, life: true};
+    let red3 = { x: 5, y: 1, super: false, life: true};
+    let red4 = { x: 7, y: 1, super: false, life: true};
+    let red5 = { x: 2, y: 2, super: false, life: true};
+    let red6 = { x: 4, y: 2, super: false, life: true}
+    let red7 = { x: 6, y: 2, super: false, life: true}
+    let red8 = { x: 8, y: 2, super: false, life: true}
+    let red9 = { x: 1, y: 3, super: false, life: true}
+    let red10 = { x: 3, y: 3, super: false, life: true}
+    let red11 = { x: 5, y: 3, super: false, life: true}
+    let red12 = { x: 7, y: 3, super: false, life: true}
+    let yellow1 = { x: 2, y: 6, super: false, drag: false, life: true}
+    let yellow2 = { x: 4, y: 6, super: false, drag: false, life: true}
+    let yellow3 = { x: 6, y: 6, super: false, drag: false, life: true}
+    let yellow4 = { x: 8, y: 6, super: false, drag: false, life: true}
+    let yellow5 = { x: 1, y: 7, super: false, drag: false, life: true}
+    let yellow6 = { x: 3, y: 7, super: false, drag: false, life: true}
+    let yellow7 = { x: 5, y: 7, super: false, drag: false, life: true}
+    let yellow8 = { x: 7, y: 7, super: false, drag: false, life: true}
+    let yellow9 = { x: 2, y: 8, super: false, drag: false, life: true}
+    let yellow10 = { x: 4, y: 8, super: false, drag: false, life: true}
+    let yellow11 = { x: 6, y: 8, super: false, drag: false, life: true}
+    let yellow12 = { x: 8, y: 8, super: false, drag: false, life: true}
+    let place1 = ""
+    let place2 = ""
+    let pos = { x: 0, y: 0}
+    let turn = 1
+    img.onload = () => {
+        ctx.drawImage(img, 0, 0, document.getElementById("myCanvas").width, document.getElementById("myCanvas").height);
+    }
+    const timerId = setInterval(function() {
+        if (window.innerHeight < window.innerWidth) {
+            document.getElementById("myCanvas").height = window.innerHeight - 7
+            document.getElementById("myCanvas").width = window.innerHeight - 7
+        }
+        if (window.innerHeight > window.innerWidth) {
+            document.getElementById("myCanvas").height = window.innerWidth - 7
+            document.getElementById("myCanvas").width = window.innerWidth - 7
+        }
+        if (window.innerHeight === window.innerWidth) {
+            document.getElementById("myCanvas").height = window.innerWidth - 7
+            document.getElementById("myCanvas").width = window.innerWidth - 7
+        }
+        ctx.drawImage(img, 0, 0, document.getElementById("myCanvas").width, document.getElementById("myCanvas").height);
+        render_all()
+    }, 1)
+    function render(list, color) {
+            place1 = ((document.getElementById("myCanvas").height / 8) * list.y) - (document.getElementById("myCanvas").height / 8)
+            place2 = ((document.getElementById("myCanvas").width / 8) * list.x) - (document.getElementById("myCanvas").width / 8)
+        if (color === "red") {
+            ctx.drawImage(red, place2, place1, document.getElementById("myCanvas").width / 8, document.getElementById("myCanvas").height / 8)
+        }
+        if (color === "yellow") {
+            ctx.drawImage(yellow, place2, place1, document.getElementById("myCanvas").width / 8, document.getElementById("myCanvas").height / 8)
+        }
+        if (color === "drag") {
+            return { x: place2, y: place1, width: document.getElementById("myCanvas").width / 8, hieght: document.getElementById("myCanvas").height / 8}
+        }
+        if (color === "red up") {
+            ctx.drawImage(red_up, place2, place1, document.getElementById("myCanvas").width / 8, document.getElementById("myCanvas").height / 8)
+        }
+        if (color === "yellow up") {
+            ctx.drawImage(yellow_up, place2, place1, document.getElementById("myCanvas").width / 8, document.getElementById("myCanvas").height / 8)
+        }
+    }
+    function render_all() {
+        if (red1.super === false) {
+            if (red1.life === true) {
+                render(red1, "red")
+            }
+        }
+        if (red2.life === true) {
+            render(red2, "red")
+        }
+        if (red3.life === true) {
+            render(red3, "red")
+        }
+        if (red4.life === true) {
+            render(red4, "red")
+        }
+        if (red5.life === true) {
+            render(red5, "red")
+        }
+        if (red6.life === true) {
+            render(red6, "red")
+        }
+        if (red7.life === true) {
+            render(red7, "red")
+        }
+        if (red8.life === true) {
+            render(red8, "red")
+        }
+        if (red9.life === true) {
+            render(red9, "red")
+        }
+        if (red10.life === true) {
+            render(red10, "red")
+        }
+        if (red11.life === true) {
+            render(red11, "red")
+        }
+        if (red12.life === true) {
+            render(red12, "red")
+        }
+        if (yellow1.life === true) {
+            if (yellow1.drag === false) {
+                render(yellow1, "yellow")
+            }
+            else {
+                ctx.drawImage(yellow, pos.x - document.getElementById("myCanvas").width / 16, pos.y - document.getElementById("myCanvas").height / 16, document.getElementById("myCanvas").width / 8, document.getElementById("myCanvas").height / 8)
+            }
+        }
+        if (yellow2.life === true) {
+            if (yellow2.drag === false) {
+                render(yellow2, "yellow")
+            }
+            else {
+                ctx.drawImage(yellow, pos.x - document.getElementById("myCanvas").width / 16, pos.y - document.getElementById("myCanvas").height / 16, document.getElementById("myCanvas").width / 8, document.getElementById("myCanvas").height / 8)
+            }
+        }
+        if (yellow3.life === true) {
+            if (yellow3.drag === false) {
+                render(yellow3, "yellow")
+            }
+            else {
+                ctx.drawImage(yellow, pos.x - document.getElementById("myCanvas").width / 16, pos.y - document.getElementById("myCanvas").height / 16, document.getElementById("myCanvas").width / 8, document.getElementById("myCanvas").height / 8)
+            }
+        }
+        if (yellow4.life === true) {
+            if (yellow4.drag === false) {
+                render(yellow4, "yellow")
+            }
+            else {
+                ctx.drawImage(yellow, pos.x - document.getElementById("myCanvas").width / 16, pos.y - document.getElementById("myCanvas").height / 16, document.getElementById("myCanvas").width / 8, document.getElementById("myCanvas").height / 8)
+            }
+        }
+        if (yellow5.life === true) {
+            if (yellow5.drag === false) {
+                render(yellow5, "yellow")
+            }
+            else {
+                ctx.drawImage(yellow, pos.x - document.getElementById("myCanvas").width / 16, pos.y - document.getElementById("myCanvas").height / 16, document.getElementById("myCanvas").width / 8, document.getElementById("myCanvas").height / 8)
+            }
+        }
+        if (yellow6.life === true) {
+            if (yellow6.drag === false) {
+                render(yellow6, "yellow")
+            }
+            else {
+                ctx.drawImage(yellow, pos.x - document.getElementById("myCanvas").width / 16, pos.y - document.getElementById("myCanvas").height / 16, document.getElementById("myCanvas").width / 8, document.getElementById("myCanvas").height / 8)
+            }
+        }
+        if (yellow7.life === true) {
+            if (yellow7.drag === false) {
+                render(yellow7, "yellow")
+            }
+            else {
+                ctx.drawImage(yellow, pos.x - document.getElementById("myCanvas").width / 16, pos.y - document.getElementById("myCanvas").height / 16, document.getElementById("myCanvas").width / 8, document.getElementById("myCanvas").height / 8)
+            }
+        }
+        if (yellow8.life === true) {
+            if (yellow8.drag === false) {
+                render(yellow8, "yellow")
+            }
+            else {
+                ctx.drawImage(yellow, pos.x - document.getElementById("myCanvas").width / 16, pos.y - document.getElementById("myCanvas").height / 16, document.getElementById("myCanvas").width / 8, document.getElementById("myCanvas").height / 8)
+            }
+        }
+        if (yellow9.life === true) {
+            if (yellow9.drag === false) {
+                render(yellow9, "yellow")
+            }
+            else {
+                ctx.drawImage(yellow, pos.x - document.getElementById("myCanvas").width / 16, pos.y - document.getElementById("myCanvas").height / 16, document.getElementById("myCanvas").width / 8, document.getElementById("myCanvas").height / 8)
+            }
+        }
+        if (yellow10.life === true) {
+            if (yellow10.drag === false) {
+                render(yellow10, "yellow")
+            }
+            else {
+                ctx.drawImage(yellow, pos.x - document.getElementById("myCanvas").width / 16, pos.y - document.getElementById("myCanvas").height / 16, document.getElementById("myCanvas").width / 8, document.getElementById("myCanvas").height / 8)
+            }
+        }
+        if (yellow11.life === true) {
+            if (yellow11.drag === false) {
+                render(yellow11, "yellow")
+            }
+            else {
+                ctx.drawImage(yellow, pos.x - document.getElementById("myCanvas").width / 16, pos.y - document.getElementById("myCanvas").height / 16, document.getElementById("myCanvas").width / 8, document.getElementById("myCanvas").height / 8)
+            }
+        }
+        if (yellow12.life === true) {
+            if (yellow12.drag === false) {
+                render(yellow12, "yellow")
+            }
+            else {
+                ctx.drawImage(yellow, pos.x - document.getElementById("myCanvas").width / 16, pos.y - document.getElementById("myCanvas").height / 16, document.getElementById("myCanvas").width / 8, document.getElementById("myCanvas").height / 8)
+            }
+        }
+    }
+    canvas.addEventListener("mouseleave", function() {
+        yellow1.drag = false
+        yellow2.drag = false
+        yellow3.drag = false
+        yellow4.drag = false
+        yellow5.drag = false
+        yellow6.drag = false
+        yellow7.drag = false
+        yellow8.drag = false
+        yellow9.drag = false
+        yellow10.drag = false
+        yellow11.drag = false
+        yellow12.drag = false
+    })
+    canvas.addEventListener("mouseup", function() {
+        new_pos.x = (round(pos.x + (document.getElementById("myCanvas").width / 16), document.getElementById("myCanvas").width / 8) / (document.getElementById("myCanvas").width / 8)) + 0
+        new_pos.y = (round(pos.y + (document.getElementById("myCanvas").width / 16), document.getElementById("myCanvas").height / 8) / (document.getElementById("myCanvas").height / 8)) + 0
+        if (check_clear(new_pos) === true) {
+            if (yellow1.drag === true && can_go(yellow1, new_pos)) {
+                if (yellow1.x % 2 === new_pos.x % 2) {
+                    if (yellow1.x + 2 === new_pos.x && yellow1.y - 2 === new_pos.y) {death({ x: yellow1.x + 1, y: yellow1.y - 1})}
+                    if (yellow1.x - 2 === new_pos.x && yellow1.y - 2 === new_pos.y) {death({ x: yellow1.x - 1, y: yellow1.y - 1})}
+                    if (yellow1.x + 2 === new_pos.x && yellow1.y + 2 === new_pos.y) {death({ x: yellow1.x + 1, y: yellow1.y + 1})}
+                    if (yellow1.x - 2 === new_pos.x && yellow1.y + 2 === new_pos.y) {death({ x: yellow1.x - 1, y: yellow1.y + 1})}
+                }
+                yellow1.x = new_pos.x
+                yellow1.y = new_pos.y
+            }
+            if (yellow2.drag === true && can_go(yellow2, new_pos)) {
+                if (yellow2.x % 2 === new_pos.x % 2) {
+                    if (yellow2.x + 2 === new_pos.x && yellow2.y - 2 === new_pos.y) {death({ x: yellow2.x + 1, y: yellow2.y - 1})}
+                    if (yellow2.x - 2 === new_pos.x && yellow2.y - 2 === new_pos.y) {death({ x: yellow2.x - 1, y: yellow2.y - 1})}
+                    if (yellow2.x + 2 === new_pos.x && yellow2.y + 2 === new_pos.y) {death({ x: yellow2.x + 1, y: yellow2.y + 1})}
+                    if (yellow2.x - 2 === new_pos.x && yellow2.y + 2 === new_pos.y) {death({ x: yellow2.x - 1, y: yellow2.y + 1})}
+                }
+                yellow2.x = new_pos.x
+                yellow2.y = new_pos.y
+            }
+            if (yellow3.drag === true && can_go(yellow3, new_pos)) {
+                if (yellow3.x % 2 === new_pos.x % 2) {
+                    if (yellow3.x + 2 === new_pos.x && yellow3.y - 2 === new_pos.y) {death({ x: yellow3.x + 1, y: yellow3.y - 1})}
+                    if (yellow3.x - 2 === new_pos.x && yellow3.y - 2 === new_pos.y) {death({ x: yellow3.x - 1, y: yellow3.y - 1})}
+                    if (yellow3.x + 2 === new_pos.x && yellow3.y + 2 === new_pos.y) {death({ x: yellow3.x + 1, y: yellow3.y + 1})}
+                    if (yellow3.x - 2 === new_pos.x && yellow3.y + 2 === new_pos.y) {death({ x: yellow3.x - 1, y: yellow3.y + 1})}
+                }
+                yellow3.x = new_pos.x
+                yellow3.y = new_pos.y
+            }
+            if (yellow4.drag === true && can_go(yellow4, new_pos)) {
+                if (yellow4.x % 2 === new_pos.x % 2) {
+                    if (yellow4.x + 2 === new_pos.x && yellow4.y - 2 === new_pos.y) {death({ x: yellow4.x + 1, y: yellow4.y - 1})}
+                    if (yellow4.x - 2 === new_pos.x && yellow4.y - 2 === new_pos.y) {death({ x: yellow4.x - 1, y: yellow4.y - 1})}
+                    if (yellow4.x + 2 === new_pos.x && yellow4.y + 2 === new_pos.y) {death({ x: yellow4.x + 1, y: yellow4.y + 1})}
+                    if (yellow4.x - 2 === new_pos.x && yellow4.y + 2 === new_pos.y) {death({ x: yellow4.x - 1, y: yellow4.y + 1})}
+                }
+                yellow4.x = new_pos.x
+                yellow4.y = new_pos.y
+            }
+            if (yellow5.drag === true && can_go(yellow5, new_pos)) {
+                    if (yellow5.x % 2 === new_pos.x % 2) {
+                        if (yellow5.x + 2 === new_pos.x && yellow5.y - 2 === new_pos.y) {death({ x: yellow5.x + 1, y: yellow5.y - 1})}
+                        if (yellow5.x - 2 === new_pos.x && yellow5.y - 2 === new_pos.y) {death({ x: yellow5.x - 1, y: yellow5.y - 1})}
+                        if (yellow5.x + 2 === new_pos.x && yellow5.y + 2 === new_pos.y) {death({ x: yellow5.x + 1, y: yellow5.y + 1})}
+                        if (yellow5.x - 2 === new_pos.x && yellow5.y + 2 === new_pos.y) {death({ x: yellow5.x - 1, y: yellow5.y + 1})}
+                    }
+                yellow5.x = new_pos.x
+                yellow5.y = new_pos.y
+            }
+            if (yellow6.drag === true && can_go(yellow6, new_pos)) {
+                if (yellow6.x % 2 === new_pos.x % 2) {
+                    if (yellow6.x + 2 === new_pos.x && yellow6.y - 2 === new_pos.y) {death({ x: yellow6.x + 1, y: yellow6.y - 1})}
+                    if (yellow6.x - 2 === new_pos.x && yellow6.y - 2 === new_pos.y) {death({ x: yellow6.x - 1, y: yellow6.y - 1})}
+                    if (yellow6.x + 2 === new_pos.x && yellow6.y + 2 === new_pos.y) {death({ x: yellow6.x + 1, y: yellow6.y + 1})}
+                    if (yellow6.x - 2 === new_pos.x && yellow6.y + 2 === new_pos.y) {death({ x: yellow6.x - 1, y: yellow6.y + 1})}
+                }
+                yellow6.x = new_pos.x
+                yellow6.y = new_pos.y
+            }
+            if (yellow7.drag === true && can_go(yellow7, new_pos)) {
+                if (yellow7.x % 2 === new_pos.x % 2) {
+                    if (yellow7.x + 2 === new_pos.x && yellow7.y - 2 === new_pos.y) {death({ x: yellow7.x + 1, y: yellow7.y - 1})}
+                    if (yellow7.x - 2 === new_pos.x && yellow7.y - 2 === new_pos.y) {death({ x: yellow7.x - 1, y: yellow7.y - 1})}
+                    if (yellow7.x + 2 === new_pos.x && yellow7.y + 2 === new_pos.y) {death({ x: yellow7.x + 1, y: yellow7.y + 1})}
+                    if (yellow7.x - 2 === new_pos.x && yellow7.y + 2 === new_pos.y) {death({ x: yellow7.x - 1, y: yellow7.y + 1})}
+                }
+                yellow7.x = new_pos.x
+                yellow7.y = new_pos.y
+            }
+            if (yellow8.drag === true && can_go(yellow8, new_pos)) {
+                if (yellow8.x % 2 === new_pos.x % 2) {
+                    if (yellow8.x + 2 === new_pos.x && yellow8.y - 2 === new_pos.y) {death({ x: yellow8.x + 1, y: yellow8.y - 1})}
+                    if (yellow8.x - 2 === new_pos.x && yellow8.y - 2 === new_pos.y) {death({ x: yellow8.x - 1, y: yellow8.y - 1})}
+                    if (yellow8.x + 2 === new_pos.x && yellow8.y + 2 === new_pos.y) {death({ x: yellow8.x + 1, y: yellow8.y + 1})}
+                    if (yellow8.x - 2 === new_pos.x && yellow8.y + 2 === new_pos.y) {death({ x: yellow8.x - 1, y: yellow8.y + 1})}
+                }
+                yellow8.x = new_pos.x
+                yellow8.y = new_pos.y
+            }
+            if (yellow9.drag === true && can_go(yellow9, new_pos)) {
+                if (yellow9.x % 2 === new_pos.x % 2) {
+                    if (yellow9.x + 2 === new_pos.x && yellow9.y - 2 === new_pos.y) {death({ x: yellow9.x + 1, y: yellow9.y - 1})}
+                    if (yellow9.x - 2 === new_pos.x && yellow9.y - 2 === new_pos.y) {death({ x: yellow9.x - 1, y: yellow9.y - 1})}
+                    if (yellow9.x + 2 === new_pos.x && yellow9.y + 2 === new_pos.y) {death({ x: yellow9.x + 1, y: yellow9.y + 1})}
+                    if (yellow9.x - 2 === new_pos.x && yellow9.y + 2 === new_pos.y) {death({ x: yellow9.x - 1, y: yellow9.y + 1})}
+                }
+                yellow9.x = new_pos.x
+                yellow9.y = new_pos.y
+            }
+            if (yellow10.drag === true && can_go(yellow10, new_pos)) {
+                if (yellow10.x % 2 === new_pos.x % 2) {
+                    if (yellow10.x + 2 === new_pos.x && yellow10.y - 2 === new_pos.y) {death({ x: yellow10.x + 1, y: yellow10.y - 1})}
+                    if (yellow10.x - 2 === new_pos.x && yellow10.y - 2 === new_pos.y) {death({ x: yellow10.x - 1, y: yellow10.y - 1})}
+                    if (yellow10.x + 2 === new_pos.x && yellow10.y + 2 === new_pos.y) {death({ x: yellow10.x + 1, y: yellow10.y + 1})}
+                    if (yellow10.x - 2 === new_pos.x && yellow10.y + 2 === new_pos.y) {death({ x: yellow10.x - 1, y: yellow10.y + 1})}
+                }
+                yellow10.x = new_pos.x
+                yellow10.y = new_pos.y
+            }
+            if (yellow11.drag === true && can_go(yellow11, new_pos)) {
+                if (yellow11.x % 2 === new_pos.x % 2) {
+                    if (yellow11.x + 2 === new_pos.x && yellow11.y - 2 === new_pos.y) {death({ x: yellow11.x + 1, y: yellow11.y - 1})}
+                    if (yellow11.x - 2 === new_pos.x && yellow11.y - 2 === new_pos.y) {death({ x: yellow11.x - 1, y: yellow11.y - 1})}
+                    if (yellow11.x + 2 === new_pos.x && yellow11.y + 2 === new_pos.y) {death({ x: yellow11.x + 1, y: yellow11.y + 1})}
+                    if (yellow11.x - 2 === new_pos.x && yellow11.y + 2 === new_pos.y) {death({ x: yellow11.x - 1, y: yellow11.y + 1})}
+                }
+                yellow11.x = new_pos.x
+                yellow11.y = new_pos.y
+            }
+            if (yellow12.drag === true && can_go(yellow12, new_pos)) {
+                if (yellow12.x % 2 === new_pos.x % 2) {
+                    if (yellow12.x + 2 === new_pos.x && yellow12.y - 2 === new_pos.y) {death({ x: yellow12.x + 1, y: yellow12.y - 1})}
+                    if (yellow12.x - 2 === new_pos.x && yellow12.y - 2 === new_pos.y) {death({ x: yellow12.x - 1, y: yellow12.y - 1})}
+                    if (yellow12.x + 2 === new_pos.x && yellow12.y + 2 === new_pos.y) {death({ x: yellow12.x + 1, y: yellow12.y + 1})}
+                    if (yellow12.x - 2 === new_pos.x && yellow12.y + 2 === new_pos.y) {death({ x: yellow12.x - 1, y: yellow12.y + 1})}
+                }
+                yellow12.x = new_pos.x
+                yellow12.y = new_pos.y
+            }
+        }
+        yellow1.drag = false
+        yellow2.drag = false
+        yellow3.drag = false
+        yellow4.drag = false
+        yellow5.drag = false
+        yellow6.drag = false
+        yellow7.drag = false
+        yellow8.drag = false
+        yellow9.drag = false
+        yellow10.drag = false
+        yellow11.drag = false
+        yellow12.drag = false
+    })
+    canvas.addEventListener("mousedown", function(event) {
+        if (turn === 1 || turn === 11) {
+            if (event.clientX > render(yellow1, "drag").x && event.clientY > render(yellow1, "drag").y && event.clientX < render(yellow1, "drag").width + render(yellow1, "drag").x && event.clientY < render(yellow1, "drag").hieght + render(yellow1, "drag").y) {
+                yellow1.drag = true
+            }
+            if (event.clientX > render(yellow2, "drag").x && event.clientY > render(yellow2, "drag").y && event.clientX < render(yellow2, "drag").width + render(yellow2, "drag").x && event.clientY < render(yellow2, "drag").hieght + render(yellow2, "drag").y) {
+                yellow2.drag = true
+            }
+            if (event.clientX > render(yellow3, "drag").x && event.clientY > render(yellow3, "drag").y && event.clientX < render(yellow3, "drag").width + render(yellow3, "drag").x && event.clientY < render(yellow3, "drag").hieght + render(yellow3, "drag").y) {
+                yellow3.drag = true
+            }
+            if (event.clientX > render(yellow4, "drag").x && event.clientY > render(yellow4, "drag").y && event.clientX < render(yellow4, "drag").width + render(yellow4, "drag").x && event.clientY < render(yellow4, "drag").hieght + render(yellow4, "drag").y) {
+                yellow4.drag = true
+            }
+            if (event.clientX > render(yellow5, "drag").x && event.clientY > render(yellow5, "drag").y && event.clientX < render(yellow5, "drag").width + render(yellow5, "drag").x && event.clientY < render(yellow5, "drag").hieght + render(yellow5, "drag").y) {
+                yellow5.drag = true
+            }
+            if (event.clientX > render(yellow6, "drag").x && event.clientY > render(yellow6, "drag").y && event.clientX < render(yellow6, "drag").width + render(yellow6, "drag").x && event.clientY < render(yellow6, "drag").hieght + render(yellow6, "drag").y) {
+                yellow6.drag = true
+            }
+            if (event.clientX > render(yellow7, "drag").x && event.clientY > render(yellow7, "drag").y && event.clientX < render(yellow7, "drag").width + render(yellow7, "drag").x && event.clientY < render(yellow7, "drag").hieght + render(yellow7, "drag").y) {
+                yellow7.drag = true
+            }
+            if (event.clientX > render(yellow8, "drag").x && event.clientY > render(yellow8, "drag").y && event.clientX < render(yellow8, "drag").width + render(yellow8, "drag").x && event.clientY < render(yellow8, "drag").hieght + render(yellow8, "drag").y) {
+                yellow8.drag = true
+            }
+            if (event.clientX > render(yellow9, "drag").x && event.clientY > render(yellow9, "drag").y && event.clientX < render(yellow9, "drag").width + render(yellow9, "drag").x && event.clientY < render(yellow9, "drag").hieght + render(yellow9, "drag").y) {
+                yellow9.drag = true
+            }
+            if (event.clientX > render(yellow10, "drag").x && event.clientY > render(yellow10, "drag").y && event.clientX < render(yellow10, "drag").width + render(yellow10, "drag").x && event.clientY < render(yellow10, "drag").hieght + render(yellow10, "drag").y) {
+                yellow10.drag = true
+            }
+            if (event.clientX > render(yellow11, "drag").x && event.clientY > render(yellow11, "drag").y && event.clientX < render(yellow11, "drag").width + render(yellow11, "drag").x && event.clientY < render(yellow11, "drag").hieght + render(yellow11, "drag").y) {
+                yellow11.drag = true
+            }
+            if (event.clientX > render(yellow12, "drag").x && event.clientY > render(yellow12, "drag").y && event.clientX < render(yellow12, "drag").width + render(yellow12, "drag").x && event.clientY < render(yellow12, "drag").hieght + render(yellow12, "drag").y) {
+                yellow12.drag = true
+            }
+        }
+    })
+    canvas.addEventListener("mousemove", function(event) {
+        pos = { x: event.clientX, y: event.clientY}
+    })
+    function round(number, nearest) {
+        if ((number % nearest) >= (nearest / 2)) {
+            return number + (nearest - (number % nearest))
+        }
+        if ((number % nearest) < (nearest / 2)) {
+            return number - (number % nearest)
+        }
+        if (number === nearest) {
+            return number
+        }
+    }
+    function check_clear(xy, color) {
+        if (color === "yellow") {
+            if (yellow1.x === xy.x && yellow1.y === xy.y) {return false}
+            else if (yellow2.x === xy.x && yellow2.y === xy.y) {return false}
+            else if (yellow3.x === xy.x && yellow3.y === xy.y) {return false}
+            else if (yellow4.x === xy.x && yellow4.y === xy.y) {return false}
+            else if (yellow5.x === xy.x && yellow5.y === xy.y) {return false}
+            else if (yellow6.x === xy.x && yellow6.y === xy.y) {return false}
+            else if (yellow7.x === xy.x && yellow7.y === xy.y) {return false}
+            else if (yellow8.x === xy.x && yellow8.y === xy.y) {return false}
+            else if (yellow9.x === xy.x && yellow9.y === xy.y) {return false}
+            else if (yellow10.x === xy.x && yellow10.y === xy.y) {return false}
+            else if (yellow11.x === xy.x && yellow11.y === xy.y) {return false}
+            else if (yellow12.x === xy.x && yellow12.y === xy.y) {return false}
+            else {return true}
+        }
+        if (color === "red") {
+            if (red1.x === xy.x && red1.y === xy.y) {return false}
+            else if (red2.x === xy.x && red2.y === xy.y) {return false}
+            else if (red3.x === xy.x && red3.y === xy.y) {return false}
+            else if (red4.x === xy.x && red4.y === xy.y) {return false}
+            else if (red5.x === xy.x && red5.y === xy.y) {return false}
+            else if (red6.x === xy.x && red6.y === xy.y) {return false}
+            else if (red7.x === xy.x && red7.y === xy.y) {return false}
+            else if (red8.x === xy.x && red8.y === xy.y) {return false}
+            else if (red9.x === xy.x && red9.y === xy.y) {return false}
+            else if (red10.x === xy.x && red10.y === xy.y) {return false}
+            else if (red11.x === xy.x && red11.y === xy.y) {return false}
+            else if (red12.x === xy.x && red12.y === xy.y) {return false}
+            else {return true}
+        }
+        if (color === undefined) {
+            if (yellow1.x === xy.x && yellow1.y === xy.y) {return false}
+            else if (yellow2.x === xy.x && yellow2.y === xy.y) {return false}
+            else if (yellow3.x === xy.x && yellow3.y === xy.y) {return false}
+            else if (yellow4.x === xy.x && yellow4.y === xy.y) {return false}
+            else if (yellow5.x === xy.x && yellow5.y === xy.y) {return false}
+            else if (yellow6.x === xy.x && yellow6.y === xy.y) {return false}
+            else if (yellow7.x === xy.x && yellow7.y === xy.y) {return false}
+            else if (yellow8.x === xy.x && yellow8.y === xy.y) {return false}
+            else if (yellow9.x === xy.x && yellow9.y === xy.y) {return false}
+            else if (yellow10.x === xy.x && yellow10.y === xy.y) {return false}
+            else if (yellow11.x === xy.x && yellow11.y === xy.y) {return false}
+            else if (yellow12.x === xy.x && yellow12.y === xy.y) {return false}
+            else if (red1.x === xy.x && red1.y === xy.y) {return false}
+            else if (red2.x === xy.x && red2.y === xy.y) {return false}
+            else if (red3.x === xy.x && red3.y === xy.y) {return false}
+            else if (red4.x === xy.x && red4.y === xy.y) {return false}
+            else if (red5.x === xy.x && red5.y === xy.y) {return false}
+            else if (red6.x === xy.x && red6.y === xy.y) {return false}
+            else if (red7.x === xy.x && red7.y === xy.y) {return false}
+            else if (red8.x === xy.x && red8.y === xy.y) {return false}
+            else if (red9.x === xy.x && red9.y === xy.y) {return false}
+            else if (red10.x === xy.x && red10.y === xy.y) {return false}
+            else if (red11.x === xy.x && red11.y === xy.y) {return false}
+            else if (red12.x === xy.x && red12.y === xy.y) {return false}
+            else {return true}
+        }
+    }
+    function can_go(old, newed) {
+        if ((old.x + 1 === newed.x || old.x - 1 === newed.x) && (old.y - 1 === newed.y)) {return true}
+        else if ((old.super === true) && (old.x + 1 === newed.x || old.x - 1 === newed.x) && (old.y + 1 === newed.y)) {return true}
+        else if (((old.x + 2 === newed.x && check_clear({ x: old.x + 1, y: old.y - 1}, "red") === false) || ((old.x - 2 === newed.x) && check_clear({ x: old.x - 1, y: old.y - 1}, "red") === false) && (old.y - 2 === newed.y)) && (old.y - 2 === newed.y)) {return true}
+        else if ((old.super === true) && ((old.x + 2 === newed.x && check_clear({ x: old.x + 1, y: old.y + 1}, "red") === false) || ((old.x - 2 === newed.x) && check_clear({ x: old.x - 1, y: old.y + 1}, "red") === false) && (old.y + 2 === newed.y)) && (old.y + 2 === newed.y)) {return true}
+    }
+    function death(xy) {
+        if (xy.x === yellow1.x && xy.y === yellow1.y) {yellow1.life = false}
+        if (xy.x === yellow2.x && xy.y === yellow2.y) {yellow2.life = false}
+        if (xy.x === yellow3.x && xy.y === yellow3.y) {yellow3.life = false}
+        if (xy.x === yellow4.x && xy.y === yellow4.y) {yellow4.life = false}
+        if (xy.x === yellow5.x && xy.y === yellow5.y) {yellow5.life = false}
+        if (xy.x === yellow6.x && xy.y === yellow6.y) {yellow6.life = false}
+        if (xy.x === yellow7.x && xy.y === yellow7.y) {yellow7.life = false}
+        if (xy.x === yellow8.x && xy.y === yellow8.y) {yellow8.life = false}
+        if (xy.x === yellow9.x && xy.y === yellow9.y) {yellow9.life = false}
+        if (xy.x === yellow10.x && xy.y === yellow10.y) {yellow10.life = false}
+        if (xy.x === yellow11.x && xy.y === yellow11.y) {yellow11.life = false}
+        if (xy.x === yellow12.x && xy.y === yellow12.y) {yellow12.life = false}
+        if (xy.x === red1.x && xy.y === red1.y) {red1.life = false}
+        if (xy.x === red2.x && xy.y === red2.y) {red2.life = false}
+        if (xy.x === red3.x && xy.y === red3.y) {red3.life = false}
+        if (xy.x === red4.x && xy.y === red4.y) {red4.life = false}
+        if (xy.x === red5.x && xy.y === red5.y) {red5.life = false}
+        if (xy.x === red6.x && xy.y === red6.y) {red6.life = false}
+        if (xy.x === red7.x && xy.y === red7.y) {red7.life = false}
+        if (xy.x === red8.x && xy.y === red8.y) {red8.life = false}
+        if (xy.x === red9.x && xy.y === red9.y) {red9.life = false}
+        if (xy.x === red10.x && xy.y === red10.y) {red10.life = false}
+        if (xy.x === red11.x && xy.y === red11.y) {red11.life = false}
+        if (xy.x === red12.x && xy.y === red12.y) {red12.life = false}
+    }
+</script>
+</body>
+</html>
